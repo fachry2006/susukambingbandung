@@ -2,10 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Money Calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Money Calendar Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         tailwind.config = {
@@ -26,34 +26,28 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-24">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-28">
 
-    <!-- SETUP WIZARD / INITIAL ONBOARDING MODAL -->
+    <!-- SETUP WIZARD -->
     <div id="setup-wizard-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 space-y-5 shadow-2xl animate-in fade-in duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 space-y-5 shadow-2xl">
             <div class="text-center space-y-2">
                 <div class="w-14 h-14 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center mx-auto text-2xl shadow-inner">
                     <i class="fa-solid fa-wallet"></i>
                 </div>
                 <h2 class="text-lg font-bold text-white">Atur Profil Keuanganmu</h2>
-                <p class="text-xs text-slate-400 leading-relaxed">Mulai dari nol secara bersih. Masukkan data awalmu agar kalender pintar bekerja akurat.</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Masukkan estimasi tanggal gajian dan budget harian idealmu untuk mulai melacak ketahanan dompet.</p>
             </div>
             
             <form onsubmit="handleInitialSetup(event)" class="space-y-3.5 text-xs">
                 <div>
                     <label class="block font-medium text-slate-400 mb-1">Nama Panggilan</label>
-                    <input type="text" id="setup-name" required placeholder="Contoh: Budi" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-medium focus:outline-none focus:border-brand-500">
+                    <input type="text" id="setup-name" required placeholder="Contoh: Alex" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-medium focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-400 mb-1">Gaji / Pemasukan Bulanan (Rp)</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-3 text-slate-400 font-bold">Rp</span>
-                        <input type="number" id="setup-salary" required min="0" placeholder="5000000" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-9 pr-3 text-white font-bold focus:outline-none focus:border-brand-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Tanggal Terima Gaji (1 - 31)</label>
-                    <input type="number" id="setup-payday" required min="1" max="31" value="25" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-medium focus:outline-none focus:border-brand-500">
+                    <label class="block font-medium text-slate-400 mb-1">Estimasi Tanggal Gajian Berikutnya (1 - 31)</label>
+                    <input type="number" id="setup-payday" required min="1" max="31" value="28" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-bold focus:outline-none focus:border-brand-500">
+                    <span class="text-[10px] text-slate-500 mt-0.5 block">Gaji fleksibel tidak tentu, tanggal ini acuan hitung mundur siklus.</span>
                 </div>
                 <div>
                     <label class="block font-medium text-slate-400 mb-1">Target Budget Harian Ideal (Rp)</label>
@@ -63,32 +57,48 @@
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl transition text-xs shadow-lg shadow-brand-600/20 mt-2">
-                    Mulai Aplikasi Bersih
+                    Mulai Aplikasi Smart Money
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- HEADER -->
     <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3 flex justify-between items-center shadow-lg">
         <div>
             <h1 class="text-base font-bold flex items-center gap-2">
-                <i class="fa-solid fa-wallet text-brand-500"></i> <span id="header-user-title">SmartMoney</span> <span class="text-[10px] px-2 py-0.5 bg-brand-500/20 text-brand-400 rounded-full font-semibold">Clean 0</span>
+                <i class="fa-solid fa-wallet text-brand-500"></i> <span id="header-user-title">SmartMoney</span> 
+                <span class="text-[10px] px-2 py-0.5 bg-brand-500/20 text-brand-400 rounded-full font-semibold">Pro Live</span>
             </h1>
             <p id="header-month-info" class="text-xs text-slate-400">Memuat periode...</p>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="openConfigModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition shadow">
+            <button onclick="openConfigModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition shadow" title="Pengaturan & Input Gaji">
                 <i class="fa-solid fa-gear text-sm"></i>
             </button>
         </div>
     </header>
 
+    <!-- MAIN CONTAINER -->
     <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4">
 
         <!-- VIEW 1: DASHBOARD -->
         <section id="view-dashboard" class="space-y-4">
-            <!-- Saldo & Runway Card -->
-            <div class="bg-gradient-to-br from-slate-800 via-slate-850 to-slate-900 border border-slate-700/60 rounded-3xl p-5 shadow-xl relative overflow-hidden">
+            
+            <!-- TOMBOL UTAMA GAJI / PEMASUKAN YANG SANGAT JELAS -->
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-4 shadow-xl flex items-center justify-between text-white">
+                <div class="space-y-1">
+                    <span class="text-[10px] bg-black/20 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Gaji Tidak Tentu?</span>
+                    <h3 class="font-extrabold text-sm">Tanggal 28 Gajian Masuk?</h3>
+                    <p class="text-[11px] text-emerald-100">Klik di sini untuk input nominal gaji bulananmu.</p>
+                </div>
+                <button onclick="openTxModal('income')" class="bg-white text-emerald-700 hover:bg-emerald-50 px-4 py-3 rounded-2xl font-extrabold text-xs shadow-lg transition flex items-center gap-2 shrink-0">
+                    <i class="fa-solid fa-circle-plus text-base"></i> Input Gaji
+                </button>
+            </div>
+
+            <!-- SALDO & RUNWAY CARD -->
+            <div class="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
                 <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <div class="flex justify-between items-start mb-3">
                     <div>
@@ -100,56 +110,56 @@
                     </span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-700/50 mt-3 text-xs">
+                <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-800 mt-3 text-xs">
                     <div>
-                        <span class="text-slate-400 block text-[11px]">Estimasi Bertahan:</span>
-                        <span id="disp-runway-date" class="font-bold text-slate-200 text-sm">-</span>
+                        <span class="text-slate-400 block text-[11px]">Siklus Gajian Berikut:</span>
+                        <span id="disp-payday-countdown" class="font-bold text-slate-200 text-sm">-</span>
                     </div>
                     <div>
-                        <span class="text-slate-400 block text-[11px]">Budget Harian Ideal:</span>
+                        <span class="text-slate-400 block text-[11px]">Batas Aman Harian:</span>
                         <span id="disp-daily-budget" class="font-bold text-brand-400 text-sm">Rp0</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Action Buttons -->
+            <!-- QUICK ACTION BUTTONS -->
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="openTxModal('expense')" class="flex items-center justify-center gap-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-semibold py-3.5 px-4 rounded-2xl transition shadow">
                     <i class="fa-solid fa-circle-minus"></i> Catat Keluar
                 </button>
                 <button onclick="openTxModal('income')" class="flex items-center justify-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-semibold py-3.5 px-4 rounded-2xl transition shadow">
-                    <i class="fa-solid fa-circle-plus"></i> Catat Masuk
+                    <i class="fa-solid fa-circle-plus"></i> Uang Masuk / Gaji
                 </button>
             </div>
 
-            <!-- Quick Smart Tags Bar -->
-            <div class="bg-slate-800/70 border border-slate-700/50 rounded-2xl p-3.5 space-y-2 shadow">
+            <!-- QUICK SMART TAGS BAR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 space-y-2 shadow">
                 <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-bolt text-amber-400"></i> Catat Cepat Sekali Klik
                 </span>
                 <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                    <button onclick="quickAdd('Kopi', 5000, 'Makanan & Minuman')" class="whitespace-nowrap px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-200 transition">
+                    <button onclick="quickAdd('Kopi', 5000, 'Makanan & Minuman')" class="whitespace-nowrap px-3.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-200 transition border border-slate-700">
                         ☕ Kopi (Rp5rb)
                     </button>
-                    <button onclick="quickAdd('Rokok', 18000, 'Rokok & Kopi')" class="whitespace-nowrap px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-200 transition">
+                    <button onclick="quickAdd('Rokok', 18000, 'Rokok & Kopi')" class="whitespace-nowrap px-3.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-200 transition border border-slate-700">
                         🚬 Rokok (Rp18rb)
                     </button>
-                    <button onclick="quickAdd('Makan Siang', 20000, 'Makanan & Minuman')" class="whitespace-nowrap px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-200 transition">
+                    <button onclick="quickAdd('Makan Siang', 20000, 'Makanan & Minuman')" class="whitespace-nowrap px-3.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-200 transition border border-slate-700">
                         🍜 Makan (Rp20rb)
                     </button>
-                    <button onclick="quickAdd('Bensin', 15000, 'Transportasi')" class="whitespace-nowrap px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-200 transition">
+                    <button onclick="quickAdd('Bensin', 15000, 'Transportasi')" class="whitespace-nowrap px-3.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-200 transition border border-slate-700">
                         ⛽ Bensin (Rp15rb)
                     </button>
                 </div>
             </div>
 
-            <!-- Ringkasan Hari Ini & Rollover -->
-            <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 space-y-2 shadow">
+            <!-- RINGKASAN HARI INI -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 shadow">
                 <div class="flex justify-between items-center text-xs text-slate-400">
                     <span class="font-medium">Pengeluaran Hari Ini</span>
                     <span id="disp-today-spent" class="font-bold text-rose-400 text-sm">Rp0</span>
                 </div>
-                <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
                     <div id="today-progress-bar" class="bg-brand-500 h-full w-0 transition-all duration-500"></div>
                 </div>
                 <div class="flex justify-between items-center text-[11px] text-slate-400 pt-1">
@@ -158,7 +168,7 @@
                 </div>
             </div>
 
-            <!-- Recent Transactions -->
+            <!-- RECENT TRANSACTIONS -->
             <div class="space-y-2.5 pt-1">
                 <div class="flex justify-between items-center px-1">
                     <h3 class="text-sm font-bold text-slate-200">Riwayat Terakhir</h3>
@@ -170,24 +180,23 @@
             </div>
         </section>
 
-        <!-- VIEW 2: CALENDAR -->
+        <!-- VIEW 2: CALENDAR SMART MONEY -->
         <section id="view-calendar" class="space-y-4 hidden">
-            <div class="bg-slate-800/90 border border-slate-700/60 rounded-3xl p-4 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-4 shadow-xl">
                 <div class="flex justify-between items-center px-1">
                     <div class="flex items-center gap-2">
-                        <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-700/80 hover:bg-slate-700 flex items-center justify-center text-slate-200 transition">
+                        <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-200 transition">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
                         <h3 id="cal-month-title" class="text-sm font-bold text-white">Bulan Berjalan</h3>
-                        <button onclick="changeMonth(1)" class="w-8 h-8 rounded-xl bg-slate-700/80 hover:bg-slate-700 flex items-center justify-center text-slate-200 transition">
+                        <button onclick="changeMonth(1)" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-200 transition">
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
                     <button onclick="resetToCurrentMonth()" class="text-[11px] font-semibold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-lg border border-brand-500/20">Hari Ini</button>
                 </div>
 
-                <!-- Grid Hari Kalender -->
-                <div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-400 font-semibold pb-1 border-b border-slate-700/60">
+                <div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-400 font-semibold pb-1 border-b border-slate-800">
                     <span>Sn</span><span>Sl</span><span>Rb</span><span>Km</span><span>Jm</span><span>Sb</span><span>Mg</span>
                 </div>
                 <div id="calendar-grid" class="grid grid-cols-7 gap-1.5">
@@ -195,39 +204,36 @@
                 </div>
             </div>
 
-            <!-- Detail Tanggal Terpilih / Info -->
-            <div id="calendar-day-detail" class="bg-slate-800/70 border border-slate-700/50 rounded-2xl p-4 space-y-3">
+            <div id="calendar-day-detail" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                 <div class="flex justify-between items-center text-xs font-bold text-slate-300">
                     <span id="detail-date-title"><i class="fa-solid fa-calendar-day text-brand-400 mr-1.5"></i> Pilih tanggal di atas</span>
                     <span id="detail-date-total" class="text-rose-400"></span>
                 </div>
-                <div id="detail-date-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                    <p class="text-xs text-slate-500 text-center py-2">Klik salah satu tanggal pada kalender untuk melihat catatan.</p>
+                <div id="detail-date-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-500 text-center py-2">Klik tanggal pada kalender untuk melihat rincian.</p>
                 </div>
             </div>
         </section>
 
-        <!-- VIEW 3: HISTORY / REKAP PERSENTASE KATEGORI -->
+        <!-- VIEW 3: REKAPITULASI -->
         <section id="view-history" class="space-y-4 hidden">
-            <!-- Analisis Persentase Kategori Boros -->
-            <div class="bg-slate-800/80 border border-slate-700/60 rounded-3xl p-4 space-y-3 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-3 shadow-xl">
                 <h3 class="text-sm font-bold text-slate-200 flex items-center gap-1.5">
-                    <i class="fa-solid fa-chart-pie text-brand-400"></i> Persentase Pengeluaran Kategori
+                    <i class="fa-solid fa-chart-pie text-brand-400"></i> Porsi Pengeluaran Kategori
                 </h3>
-                <p class="text-[11px] text-slate-400">Cek ke mana saja porsi uang keluarmu paling banyak tersedot bulan ini.</p>
                 <div id="category-breakdown-list" class="space-y-2.5 pt-1">
                     <!-- Populated by JS -->
                 </div>
             </div>
 
-            <div class="bg-slate-800/80 border border-slate-700/60 rounded-3xl p-4 space-y-3 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-3 shadow-xl">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-slate-200">Semua Catatan</h3>
+                    <h3 class="text-sm font-bold text-slate-200">Semua Catatan Keuangan</h3>
                     <span id="total-expense-rekap" class="text-xs font-semibold text-rose-400">Total Keluar: Rp0</span>
                 </div>
                 <div class="relative">
                     <i class="fa-solid fa-search absolute left-3 top-3.5 text-xs text-slate-400"></i>
-                    <input type="text" id="search-tx" oninput="renderHistory()" placeholder="Cari keterangan..." class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 pl-9 pr-3 text-xs text-slate-100 focus:outline-none focus:border-brand-500">
+                    <input type="text" id="search-tx" oninput="renderHistory()" placeholder="Cari keterangan..." class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-xs text-slate-100 focus:outline-none focus:border-brand-500">
                 </div>
                 <div id="full-tx-list" class="space-y-2 max-h-[42vh] overflow-y-auto pr-1">
                     <!-- Populated by JS -->
@@ -237,7 +243,7 @@
 
     </main>
 
-    <!-- Navigation Bar -->
+    <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-950/95 backdrop-blur border-t border-slate-800 px-6 py-3 flex justify-around items-center z-40 shadow-2xl">
         <button onclick="switchTab('dashboard')" id="nav-btn-dashboard" class="flex flex-col items-center gap-1 text-brand-500 transition py-1">
             <i class="fa-solid fa-house text-lg"></i>
@@ -253,7 +259,7 @@
         </button>
     </nav>
 
-    <!-- Custom Safe Alert / Message Box -->
+    <!-- CUSTOM ALERT MODAL -->
     <div id="custom-alert" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xs p-5 space-y-4 shadow-2xl text-center">
             <div id="alert-icon-wrap" class="w-12 h-12 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center mx-auto text-xl">
@@ -269,9 +275,9 @@
         </div>
     </div>
 
-    <!-- Modal Catat Transaksi -->
+    <!-- TRANSACTION MODAL -->
     <div id="tx-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl animate-in fade-in slide-in-from-bottom duration-200">
+        <div class="bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
                 <h3 id="tx-modal-title" class="text-base font-bold text-white">Catat Pengeluaran</h3>
                 <button onclick="closeTxModal()" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">
@@ -284,12 +290,12 @@
                     <label class="block text-xs font-medium text-slate-400 mb-1">Nominal (Rupiah)</label>
                     <div class="relative">
                         <span class="absolute left-3 top-3 text-xs text-slate-400 font-bold">Rp</span>
-                        <input type="number" id="tx-amount" required min="1" placeholder="25000" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-9 pr-3 text-sm text-white font-bold focus:outline-none focus:border-brand-500">
+                        <input type="number" id="tx-amount" required min="1" placeholder="25000" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-sm text-white font-bold focus:outline-none focus:border-brand-500">
                     </div>
                 </div>
                 <div id="category-field-wrap">
                     <label class="block text-xs font-medium text-slate-400 mb-1">Kategori Pengeluaran</label>
-                    <select id="tx-category" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <select id="tx-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-brand-500">
                         <option value="Makanan & Minuman">🍜 Makanan & Minuman</option>
                         <option value="Rokok & Kopi">🚬 Rokok & Kopi</option>
                         <option value="Transportasi">⛽ Transportasi</option>
@@ -297,12 +303,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Keterangan</label>
-                    <input type="text" id="tx-desc" required placeholder="Contoh: Makan siang" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Keterangan / Catatan</label>
+                    <input type="text" id="tx-desc" required placeholder="Contoh: Gaji Tanggal 28" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Tanggal</label>
-                    <input type="date" id="tx-date" required class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <input type="date" id="tx-date" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl transition text-xs shadow-lg shadow-brand-600/20 mt-2">
                     Simpan Catatan
@@ -311,47 +317,60 @@
         </div>
     </div>
 
-    <!-- Modal Pengaturan & Backup -->
+    <!-- CONFIG / SETTINGS MODAL (PENGATURAN & INPUT GAJI) -->
     <div id="config-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
-                <h3 class="text-base font-bold text-white">Pengaturan & Profil</h3>
+                <h3 class="text-base font-bold text-white">Pengaturan & Input Gaji</h3>
                 <button onclick="closeConfigModal()" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Nama Panggilan</label>
-                    <input type="text" id="cfg-name" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-medium focus:outline-none focus:border-brand-500">
+            
+            <div class="space-y-4 text-xs">
+                <!-- AKSES CEPAT INPUT GAJI DI DALAM PENGATURAN -->
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-3.5 text-white space-y-2 shadow-md">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-plus text-lg"></i>
+                        <span class="font-bold text-sm">Terima Gaji / Uang Masuk</span>
+                    </div>
+                    <p class="text-[11px] text-emerald-100">Gaji bulananmu tidak tentu? Input nominal gaji baru di tanggal 28 lewat tombol ini.</p>
+                    <button onclick="closeConfigModal(); openTxModal('income');" class="w-full bg-white text-emerald-700 hover:bg-emerald-50 py-2.5 rounded-xl font-extrabold transition shadow">
+                        Input Gaji Sekarang
+                    </button>
                 </div>
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Gaji Bulanan Utama (Rp)</label>
-                    <input type="number" id="cfg-salary" min="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-bold focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Tanggal Terima Gaji (1-31)</label>
-                    <input type="number" id="cfg-payday" min="1" max="31" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-bold focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Target Budget Harian Ideal (Rp)</label>
-                    <input type="number" id="cfg-daily-budget" min="0" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-white font-bold focus:outline-none focus:border-brand-500">
-                </div>
-                <button onclick="saveConfigSettings()" class="w-full bg-slate-800 hover:bg-slate-700 text-brand-400 border border-brand-500/30 font-semibold py-2.5 rounded-xl transition shadow">
-                    Simpan Perubahan Profil
-                </button>
 
-                <hr class="border-slate-800 my-2">
+                <hr class="border-slate-800">
 
-                <div class="space-y-2 pt-1">
-                    <span class="font-bold text-slate-300 block">Backup & Restore File JSON</span>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">Simpan cadangan data ke file JSON atau pulihkan data.</p>
+                <div class="space-y-3">
+                    <h4 class="font-bold text-slate-200">Pengaturan Profil & Budget</h4>
+                    <div>
+                        <label class="block font-medium text-slate-400 mb-1">Nama Panggilan</label>
+                        <input type="text" id="cfg-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white font-medium focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-400 mb-1">Estimasi Tanggal Gajian Berikut (1-31)</label>
+                        <input type="number" id="cfg-payday" min="1" max="31" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white font-bold focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-400 mb-1">Target Budget Harian Ideal (Rp)</label>
+                        <input type="number" id="cfg-daily-budget" min="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3 text-white font-bold focus:outline-none focus:border-brand-500">
+                    </div>
+                    <button onclick="saveConfigSettings()" class="w-full bg-slate-800 hover:bg-slate-700 text-brand-400 border border-brand-500/30 font-semibold py-2.5 rounded-xl transition shadow">
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+                <hr class="border-slate-800">
+
+                <div class="space-y-2">
+                    <span class="font-bold text-slate-300 block">Cadangkan / Pulihkan Data (JSON)</span>
                     <div class="grid grid-cols-2 gap-2 pt-1">
                         <button onclick="exportJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 px-3 rounded-xl font-medium transition flex items-center justify-center gap-1.5 shadow">
-                            <i class="fa-solid fa-download"></i> Export
+                            <i class="fa-solid fa-download"></i> Export JSON
                         </button>
                         <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 px-3 rounded-xl font-medium transition flex items-center justify-center gap-1.5 cursor-pointer shadow">
-                            <i class="fa-solid fa-upload"></i> Import
+                            <i class="fa-solid fa-upload"></i> Import JSON
                             <input type="file" id="import-file" accept=".json" onchange="importJSON(event)" class="hidden">
                         </label>
                     </div>
@@ -359,46 +378,44 @@
 
                 <div class="pt-2">
                     <button onclick="resetAppCompletely()" class="w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-semibold py-2.5 rounded-xl transition">
-                        Reset Total Aplikasi (Hapus Semua)
+                        Reset Total Data Aplikasi
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- SCRIPT LOGIC -->
     <script>
-        // State Aplikasi Awal Kosong (0)
         let appData = {
             profile: {
                 name: '',
-                monthlySalary: 0,
-                payday: 25
+                payday: 28
             },
             settings: {
-                dailyBudget: 0
+                dailyBudget: 50000
             },
             transactions: []
         };
 
         let currentCalendarDate = new Date();
         let selectedDateStr = new Date().toISOString().split('T')[0];
-        const STORAGE_KEY = 'smart_money_calendar_pro_v3_clean';
+        const STORAGE_KEY = 'smart_money_calendar_pro_v7';
 
         function initApp() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 try {
                     appData = JSON.parse(saved);
-                    if (!appData.profile) appData.profile = { name: '', monthlySalary: 0, payday: 25 };
-                    if (!appData.settings) appData.settings = { dailyBudget: 0 };
+                    if (!appData.profile) appData.profile = { name: '', payday: 28 };
+                    if (!appData.settings) appData.settings = { dailyBudget: 50000 };
                     if (!appData.transactions) appData.transactions = [];
                 } catch(e) {
                     console.error("Error reading storage:", e);
                 }
             }
 
-            // Jika profil belum diatur (nama kosong / gaji 0), tampilkan setup wizard
-            if (!appData.profile.name || appData.profile.monthlySalary === 0) {
+            if (!appData.profile.name || appData.profile.name.trim() === '') {
                 document.getElementById('setup-wizard-modal').classList.remove('hidden');
             } else {
                 document.getElementById('setup-wizard-modal').classList.add('hidden');
@@ -411,31 +428,16 @@
         function handleInitialSetup(e) {
             e.preventDefault();
             const name = document.getElementById('setup-name').value.trim();
-            const salary = Number(document.getElementById('setup-salary').value);
-            const payday = Number(document.getElementById('setup-payday').value);
-            const dailyBudget = Number(document.getElementById('setup-daily-budget').value);
+            const payday = Number(document.getElementById('setup-payday').value) || 28;
+            const dailyBudget = Number(document.getElementById('setup-daily-budget').value) || 50000;
 
             appData.profile.name = name;
-            appData.profile.monthlySalary = salary;
             appData.profile.payday = payday;
             appData.settings.dailyBudget = dailyBudget;
 
-            // Otomatis masukkan gaji pertama sebagai saldo awal/pemasukan di tanggal gajian atau hari ini jika diinginkan, atau biarkan murni dari transaksi
-            if (salary > 0) {
-                const todayStr = new Date().toISOString().split('T')[0];
-                appData.transactions.push({
-                    id: 'init_salary_' + Date.now(),
-                    type: 'income',
-                    amount: salary,
-                    category: 'Pendapatan',
-                    desc: 'Gaji Bulanan Awal',
-                    date: todayStr
-                });
-            }
-
             saveDataLocally();
             document.getElementById('setup-wizard-modal').classList.add('hidden');
-            showCustomAlert("Selamat Datang!", `Halo ${name}, dompet bersihmu siap digunakan.`, "success");
+            showCustomAlert("Berhasil!", `Halo ${name}, sistem Smart Money siap digunakan.`, "success");
         }
 
         function saveDataLocally() {
@@ -501,21 +503,23 @@
                 document.getElementById('today-status-text').className = "text-[11px] text-slate-400";
             }
 
-            // Estimasi Runway / Bertahan
-            const uniqueExpenseDays = [...new Set(appData.transactions.filter(t => t.type === 'expense').map(t => t.date))].length;
-            const avgDaily = uniqueExpenseDays > 0 ? (totalExpense / uniqueExpenseDays) : appData.settings.dailyBudget;
-            const daysLeft = avgDaily > 0 ? Math.floor(currentSaldo / avgDaily) : 30;
-            
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + Math.max(0, daysLeft));
-            
-            document.getElementById('disp-runway-date').innerText = currentSaldo <= 0 ? "Habis!" : targetDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            const paydayNum = Number(appData.profile.payday) || 28;
+            let targetPaydayDate = new Date(now.getFullYear(), now.getMonth(), paydayNum);
+            if (now.getDate() >= paydayNum) {
+                targetPaydayDate.setMonth(targetPaydayDate.getMonth() + 1);
+            }
+            const diffTime = targetPaydayDate - now;
+            const daysToPayday = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+            document.getElementById('disp-payday-countdown').innerText = `${daysToPayday} Hari Lagi (${paydayNum} ${targetPaydayDate.toLocaleDateString('id-ID', {month: 'short'})})`;
 
             const badgeRunway = document.getElementById('badge-runway');
-            if (daysLeft < 3 || currentSaldo <= 0) {
+            const safeDailyBySaldo = Math.floor(currentSaldo / daysToPayday);
+
+            if (currentSaldo <= 0 || safeDailyBySaldo < 10000) {
                 badgeRunway.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
                 badgeRunway.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Kritis`;
-            } else if (daysLeft < 7) {
+            } else if (safeDailyBySaldo < appData.settings.dailyBudget) {
                 badgeRunway.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
                 badgeRunway.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Waspada`;
             } else {
@@ -531,12 +535,12 @@
             const recent = [...appData.transactions].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
             
             if (recent.length === 0) {
-                listEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-3">Belum ada catatan transaksi (0 transaksi).</p>`;
+                listEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-3">Belum ada catatan transaksi.</p>`;
                 return;
             }
 
             listEl.innerHTML = recent.map(t => `
-                <div class="bg-slate-800/70 border border-slate-700/50 rounded-2xl p-3 flex justify-between items-center text-xs shadow-sm">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex justify-between items-center text-xs shadow-sm">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-xl ${t.type === 'income' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} flex items-center justify-center font-bold">
                             <i class="fa-solid ${t.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-xs"></i>
@@ -576,7 +580,7 @@
 
             let html = '';
             for (let i = 0; i < startingSpace; i++) {
-                html += `<div class="h-14 bg-slate-900/30 rounded-xl opacity-20"></div>`;
+                html += `<div class="h-14 bg-slate-950/40 rounded-xl opacity-20"></div>`;
             }
 
             for (let day = 1; day <= totalDays; day++) {
@@ -589,7 +593,7 @@
                 const hasTx = dayExpenses > 0;
                 const isSelected = selectedDateStr === dayStr;
                 
-                let bgStyle = "bg-slate-800/80 border-slate-700/60 text-slate-300";
+                let bgStyle = "bg-slate-950/80 border-slate-800 text-slate-300";
                 if (isSelected) {
                     bgStyle = "bg-brand-600/30 border-brand-500 text-white ring-2 ring-brand-500/50";
                 } else if (hasTx) {
@@ -597,7 +601,7 @@
                 }
 
                 html += `
-                    <div onclick="selectCalendarDate('${dayStr}')" class="h-14 rounded-xl border ${bgStyle} p-1 flex flex-col justify-between text-left transition hover:border-slate-500 cursor-pointer shadow-sm">
+                    <div onclick="selectCalendarDate('${dayStr}')" class="h-14 rounded-xl border ${bgStyle} p-1 flex flex-col justify-between text-left transition hover:border-slate-600 cursor-pointer shadow-sm">
                         <div class="flex justify-between items-center text-[11px] font-bold">
                             <span>${day}</span>
                             ${hasTx ? `<span class="w-1.5 h-1.5 rounded-full ${isOver ? 'bg-rose-500' : 'bg-emerald-500'}"></span>` : ''}
@@ -625,16 +629,47 @@
             const dayTransactions = appData.transactions.filter(t => t.date === selectedDateStr);
             const dayExpenseTotal = dayTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount), 0);
 
+            const totalIncome = appData.transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount), 0);
+            const totalExpense = appData.transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount), 0);
+            const currentSaldo = totalIncome - totalExpense;
+
+            const selectedDateObj = new Date(selectedDateStr);
+            const paydayNum = Number(appData.profile.payday) || 28;
+            
+            let targetPaydayDate = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), paydayNum);
+            if (selectedDateObj.getDate() >= paydayNum) {
+                targetPaydayDate.setMonth(targetPaydayDate.getMonth() + 1);
+            }
+
+            const diffTime = targetPaydayDate - selectedDateObj;
+            const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+            const safeBudgetPerDay = Math.floor(currentSaldo / diffDays);
+
             titleEl.innerHTML = `<i class="fa-solid fa-calendar-day text-brand-400 mr-1.5"></i> ${selectedDateStr}`;
             totalEl.innerText = dayExpenseTotal > 0 ? `Keluar: ${formatRupiah(dayExpenseTotal)}` : '';
 
+            let runwayPredictionHtml = `
+                <div class="bg-brand-500/10 border border-brand-500/30 rounded-xl p-3 space-y-1.5 mb-2 text-xs">
+                    <div class="flex justify-between items-center text-[11px] font-bold text-brand-300">
+                        <span><i class="fa-solid fa-bullseye mr-1"></i> Sisa Ketahanan s.d Gajian (${paydayNum})</span>
+                        <span>${diffDays} Hari Lagi</span>
+                    </div>
+                    <p class="text-[11px] text-slate-300 leading-relaxed">
+                        Jika saldo dompet di tanggal ini <strong class="text-white">${formatRupiah(currentSaldo)}</strong>, batas aman harianmu adalah:
+                    </p>
+                    <div class="text-sm font-extrabold text-brand-400">
+                        ${formatRupiah(Math.max(0, safeBudgetPerDay))} / hari
+                    </div>
+                </div>
+            `;
+
             if (dayTransactions.length === 0) {
-                listEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-3">Tidak ada catatan pada tanggal ini.</p>`;
+                listEl.innerHTML = runwayPredictionHtml + `<p class="text-xs text-slate-500 text-center py-2">Tidak ada transaksi tercatat pada tanggal ini.</p>`;
                 return;
             }
 
-            listEl.innerHTML = dayTransactions.map(t => `
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex justify-between items-center text-xs">
+            let txsHtml = dayTransactions.map(t => `
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex justify-between items-center text-xs">
                     <div class="flex items-center gap-2">
                         <div class="w-7 h-7 rounded-lg ${t.type === 'income' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} flex items-center justify-center font-bold">
                             <i class="fa-solid ${t.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-[10px]"></i>
@@ -654,6 +689,8 @@
                     </div>
                 </div>
             `).join('');
+
+            listEl.innerHTML = runwayPredictionHtml + txsHtml;
         }
 
         function renderHistory() {
@@ -688,7 +725,7 @@
                             <span class="font-semibold text-slate-300">${cat}</span>
                             <span class="font-bold text-slate-200">${formatRupiah(amount)} <span class="text-[10px] text-brand-400 font-normal">(${percent}%)</span></span>
                         </div>
-                        <div class="w-full bg-slate-700/80 h-2 rounded-full overflow-hidden">
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                             <div class="bg-brand-500 h-full transition-all duration-500" style="width: ${percent}%"></div>
                         </div>
                     </div>
@@ -705,7 +742,7 @@
             }
 
             listEl.innerHTML = filtered.map(t => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex justify-between items-center text-xs shadow-sm">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex justify-between items-center text-xs shadow-sm">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-xl ${t.type === 'income' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} flex items-center justify-center font-bold">
                             <i class="fa-solid ${t.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'} text-xs"></i>
@@ -729,9 +766,9 @@
 
         function openTxModal(type) {
             document.getElementById('tx-type').value = type;
-            document.getElementById('tx-modal-title').innerText = type === 'income' ? 'Catat Uang Masuk' : 'Catat Pengeluaran';
+            document.getElementById('tx-modal-title').innerText = type === 'income' ? 'Catat Uang Masuk / Gaji Bulanan' : 'Catat Pengeluaran';
             document.getElementById('tx-amount').value = '';
-            document.getElementById('tx-desc').value = '';
+            document.getElementById('tx-desc').value = type === 'income' ? 'Gaji Tanggal 28' : '';
             document.getElementById('tx-date').value = selectedDateStr;
             
             const catWrap = document.getElementById('category-field-wrap');
@@ -752,7 +789,7 @@
             e.preventDefault();
             const type = document.getElementById('tx-type').value;
             const amount = Number(document.getElementById('tx-amount').value);
-            const category = type === 'income' ? 'Pendapatan' : document.getElementById('tx-category').value;
+            const category = type === 'income' ? 'Pendapatan Gaji' : document.getElementById('tx-category').value;
             const desc = document.getElementById('tx-desc').value;
             const date = document.getElementById('tx-date').value;
 
@@ -773,7 +810,7 @@
             appData.transactions.push(newTx);
             saveDataLocally();
             closeTxModal();
-            showCustomAlert("Berhasil", "Catatan keuangan berhasil disimpan.", "success");
+            showCustomAlert("Berhasil", "Catatan berhasil disimpan ke sistem.", "success");
         }
 
         function quickAdd(desc, amount, category) {
@@ -788,20 +825,19 @@
             };
             appData.transactions.push(newTx);
             saveDataLocally();
-            showCustomAlert("Berhasil", `Cepat catat: ${desc} (${formatRupiah(amount)})`, "success");
+            showCustomAlert("Berhasil", `Tercatat cepat: ${desc} (${formatRupiah(amount)})`, "success");
         }
 
         function deleteTx(id) {
             appData.transactions = appData.transactions.filter(t => t.id !== id);
             saveDataLocally();
-            showCustomAlert("Terhapus", "Catatan berhasil dihapus dari sistem.", "success");
+            showCustomAlert("Terhapus", "Catatan berhasil dihapus.", "success");
         }
 
         function openConfigModal() {
             document.getElementById('cfg-name').value = appData.profile.name || '';
-            document.getElementById('cfg-salary').value = appData.profile.monthlySalary || 0;
-            document.getElementById('cfg-payday').value = appData.profile.payday || 25;
-            document.getElementById('cfg-daily-budget').value = appData.settings.dailyBudget || 0;
+            document.getElementById('cfg-payday').value = appData.profile.payday || 28;
+            document.getElementById('cfg-daily-budget').value = appData.settings.dailyBudget || 50000;
             document.getElementById('config-modal').classList.remove('hidden');
         }
 
@@ -811,17 +847,16 @@
 
         function saveConfigSettings() {
             appData.profile.name = document.getElementById('cfg-name').value.trim();
-            appData.profile.monthlySalary = Number(document.getElementById('cfg-salary').value);
-            appData.profile.payday = Number(document.getElementById('cfg-payday').value);
-            appData.settings.dailyBudget = Number(document.getElementById('cfg-daily-budget').value);
+            appData.profile.payday = Number(document.getElementById('cfg-payday').value) || 28;
+            appData.settings.dailyBudget = Number(document.getElementById('cfg-daily-budget').value) || 50000;
             
             saveDataLocally();
             closeConfigModal();
-            showCustomAlert("Berhasil", "Profil dan pengaturan diperbarui.", "success");
+            showCustomAlert("Berhasil", "Pengaturan profil diperbarui.", "success");
         }
 
         function resetAppCompletely() {
-            if (confirm("Yakin ingin meresot seluruh data menjadi 0?")) {
+            if (confirm("Yakin ingin mereset seluruh data catatan?")) {
                 localStorage.removeItem(STORAGE_KEY);
                 location.reload();
             }
